@@ -1,28 +1,51 @@
 # CourseHub – Course Enrollment Management System
 
-## About the Project
+A full-stack course management application built with **React.js, Java, Spring Boot, and MySQL**. CourseHub allows users to explore courses, view course details, enroll in courses, and manage their enrollments. Administrators can manage the course catalog through a role-based dashboard.
 
-CourseHub is a full-stack web application developed using React.js, Java, Spring Boot, and MySQL. It provides a platform where users can explore available courses, view course details, and enroll in courses. Administrators can manage course information through the application.
+## 📌 About the Project
 
-## Features
+CourseHub is designed to simplify course discovery and enrollment through a user-friendly web interface. The application separates the public landing page, authentication pages, and role-based dashboards to provide a structured user experience.
 
-- **User Registration and Login:** Users can create an account and log in securely.
-- **Course Catalog:** View available courses and their details.
-- **Course Search and Filtering:** Search courses by name or trainer, filter by category, and set a maximum fee.
-- **Course Enrollment:** Enroll in courses and view personal enrollments.
-- **Enrollment Cancellation:** Allow users to cancel their enrollments.
-- **Admin Course Management:** Add, update, and delete courses.
-- **Role-Based Access Control:** Restrict administrative operations to authorized admins.
-- **Responsive User Interface:** Access the application through a React-based web interface.
+After logging in, users are redirected to the appropriate dashboard according to the role returned by the backend.
 
-## Technologies Used
+## ✨ Features
+
+### User Features
+- **User Registration:** Create an account through a separate signup page.
+- **Secure Login:** Authenticate using registered credentials.
+- **Course Catalog:** Browse available courses.
+- **Course Details:** View course information, including trainer, duration, fee, category, and description.
+- **Search and Filtering:** Find courses using supported search and filtering options.
+- **Course Enrollment:** Enroll in available courses.
+- **My Courses:** View courses associated with the logged-in user.
+- **Enrollment Cancellation:** Cancel an enrollment if supported by the backend implementation.
+- **Logout:** End the authenticated session.
+
+### Admin Features
+- **Admin Dashboard:** Access course management functionality based on the assigned role.
+- **Add Courses:** Create new course records.
+- **Update Courses:** Edit existing course information.
+- **Delete Courses:** Remove courses from the catalog.
+- **View Course Details:** Inspect individual course information.
+- **Role-Based Access:** Restrict administrative functionality to authorized administrators.
+
+### User Interface
+- Separate landing, login, and signup pages.
+- Dedicated routes for user and admin dashboards.
+- Responsive React-based interface.
+- Form validation and success/error messages.
+- Course search, tables, and course details views.
+- Navigation based on authentication status and user role.
+
+## 🛠️ Technologies Used
 
 ### Frontend
 - React.js
 - JavaScript
 - HTML5
 - CSS3
-- Axios
+- React Router DOM
+- Axios, if used by the current implementation
 - Vite
 
 ### Backend
@@ -31,45 +54,111 @@ CourseHub is a full-stack web application developed using React.js, Java, Spring
 - Spring Web MVC
 - Spring Data JPA
 - Spring Security
-- Hibernate
+- Hibernate ORM
 - Maven
 - Bean Validation
 
 ### Database
 - MySQL
 
-### Security
+### Authentication and Security
 - Spring Security
 - BCrypt password hashing
 - Session-based authentication
+- Role-based authorization
+- Credentialed frontend-to-backend requests
 
-## Project Architecture
+## 🏗️ Project Architecture
 
-The backend follows a layered architecture:
+The backend follows a layered architecture to separate responsibilities.
 
-- **Controller Layer:** Handles HTTP requests and REST API endpoints.
-- **Service Layer:** Contains application logic and course management operations.
-- **Repository Layer:** Uses Spring Data JPA to interact with the database.
-- **Entity Layer:** Represents database tables such as users, courses, and enrollments.
-- **Configuration Layer:** Configures security, authentication, and CORS.
+- **Controller Layer:** Receives HTTP requests and exposes REST API endpoints.
+- **Service Layer:** Implements application and business logic.
+- **Repository Layer:** Uses Spring Data JPA to communicate with the database.
+- **Entity Layer:** Represents application data, including users, courses, and enrollments.
+- **Configuration Layer:** Configures security, authentication, and cross-origin requests.
+- **Frontend Layer:** Provides the landing page, authentication forms, dashboards, and course management interface.
 
 ### Application Flow
 
-React.js Frontend → REST APIs → Spring Boot Backend → Spring Data JPA → MySQL Database
+```text
+User
+  |
+  v
+React.js Frontend
+  |
+  +--> Landing Page
+  |
+  +--> Login / Signup
+  |
+  +--> User Dashboard
+  |       |
+  |       +--> Browse Courses
+  |       +--> View Course Details
+  |       +--> Enroll in Courses
+  |       +--> View My Courses
+  |
+  +--> Admin Dashboard
+          |
+          +--> Add Courses
+          +--> Update Courses
+          +--> Delete Courses
+  |
+  v
+Spring Boot REST APIs
+  |
+  v
+Service Layer
+  |
+  v
+Spring Data JPA / Hibernate
+  |
+  v
+MySQL Database
+```
 
-The backend processes requests and returns responses to the frontend, which displays the results to the user.
+The frontend communicates with the backend through REST APIs. The backend validates requests, applies business rules, interacts with MySQL, and returns responses to the frontend.
 
-## Database Design
+## 🔐 Authentication and Role-Based Navigation
 
-The application uses MySQL to store its data.
+CourseHub uses session-based authentication.
 
-- **app_users:** Stores user information, password hashes, and roles.
-- **course:** Stores course names, trainer details, duration, fees, and categories.
-- **enrollments:** Stores user-course enrollment details, enrollment dates, and status.
+1. A new user registers through the signup page.
+2. The user logs in through the separate login page.
+3. The frontend sends the login request to the Spring Boot backend.
+4. The backend authenticates the user and establishes the session.
+5. The frontend checks the authenticated user's information and role.
+6. Normal users are redirected to the user dashboard.
+7. Administrators are redirected to the admin dashboard.
+8. On logout, the frontend requests session termination from the backend.
 
-The enrollment records connect users with courses.
+Public registration should create normal `USER` accounts by default. Administrative access should be assigned only through a trusted administrative process.
 
-## Project Structure
+**Security note:** Frontend route protection improves navigation, but the backend must also enforce authorization for administrative API operations.
+
+## 🗄️ Database Design
+
+The application uses MySQL to persist user, course, and enrollment information.
+
+### Main Tables
+
+| Table | Purpose |
+|---|---|
+| `app_users` | Stores user details, password hashes, and roles. |
+| `course` | Stores course names, trainers, duration, fees, categories, and descriptions. |
+| `enrollments` | Stores user-course enrollment records, dates, and status. |
+
+### Relationships
+
+- One user can enroll in multiple courses.
+- One course can have multiple enrolled users.
+- The `enrollments` table connects users and courses.
+
+This creates a many-to-many relationship between users and courses through enrollment records.
+
+## 📁 Project Structure
+
+The following is the expected high-level structure. Exact filenames and folders may vary depending on the current implementation.
 
 ```text
 CourseHub/
@@ -84,13 +173,21 @@ CourseHub/
 │   │   └── service/
 │   ├── src/main/resources/
 │   │   └── application.properties
-│   └── pom.xml
+│   ├── pom.xml
+│   └── mvnw.cmd
 │
 ├── customer-portal-ui/
 │   ├── src/
-│   │   ├── services/
+│   │   ├── components/
+│   │   │   └── ProtectedRoute.jsx
+│   │   ├── pages/
+│   │   │   ├── Landing.jsx
+│   │   │   ├── Login.jsx
+│   │   │   ├── Signup.jsx
+│   │   │   └── CourseDashboard.jsx
 │   │   ├── App.jsx
 │   │   ├── App.css
+│   │   ├── index.css
 │   │   └── main.jsx
 │   ├── package.json
 │   └── vite.config.js
@@ -98,17 +195,27 @@ CourseHub/
 └── README.md
 ```
 
-## Prerequisites
+## ⚙️ Prerequisites
 
-Install the following before running the project:
+Install the following software before running the project:
 
-- Java version compatible with the project configuration (Java 25 in the current `pom.xml`)
-- MySQL Server
-- Node.js and npm
-- Git
-- An IDE such as Eclipse or IntelliJ IDEA
+- Java version compatible with the project configuration.
+- MySQL Server.
+- Node.js and npm.
+- Git.
+- An IDE such as IntelliJ IDEA or Eclipse.
+- A terminal or command prompt.
 
-## How to Run the Project
+Check your installed versions:
+
+```bash
+java -version
+node -v
+npm -v
+git --version
+```
+
+## 🚀 How to Run the Project
 
 ### 1. Clone the Repository
 
@@ -117,35 +224,41 @@ git clone YOUR_GITHUB_REPOSITORY_URL
 cd CourseHub
 ```
 
-Replace `YOUR_GITHUB_REPOSITORY_URL` with your actual GitHub repository URL.
+Replace `YOUR_GITHUB_REPOSITORY_URL` with your actual repository URL.
 
 ### 2. Create the Database
 
-Open MySQL and run:
+Open MySQL and execute:
 
 ```sql
 CREATE DATABASE coursehub;
 ```
 
+Use the database name configured in your backend application.
+
 ### 3. Configure the Backend
 
-The backend configuration is in:
+Open:
 
 `coursePortal/src/main/resources/application.properties`
 
-Set the database connection using these environment variables:
+Configure the database URL, username, and password using the settings supported by your application.
 
-- `COURSE_DB_URL` — defaults to `jdbc:mysql://localhost:3306/coursehub`
-- `COURSE_DB_USERNAME` — your MySQL username
-- `COURSE_DB_PASSWORD` — your MySQL password
+Example environment variables:
 
-For local development, the application uses Hibernate's `update` setting to create or update database tables.
+```text
+COURSE_DB_URL=jdbc:mysql://localhost:3306/coursehub
+COURSE_DB_USERNAME=your_mysql_username
+COURSE_DB_PASSWORD=your_mysql_password
+```
 
-Do not commit database passwords or other secrets to GitHub.
+These variable names must match those referenced in your actual `application.properties` file.
 
-### 4. Start the Backend
+Do not commit real database passwords, API keys, or other secrets to GitHub.
 
-Open a terminal inside the `coursePortal` folder.
+### 4. Start the Spring Boot Backend
+
+Open a terminal inside the `coursePortal` directory.
 
 On Windows:
 
@@ -159,69 +272,80 @@ On macOS or Linux:
 ./mvnw spring-boot:run
 ```
 
-The backend runs at:
+The backend is configured to run at:
 
 `http://localhost:9878`
 
-### 5. Start the Frontend
+If the Maven wrapper is unavailable, install Maven and use `mvn spring-boot:run`.
 
-Open another terminal inside the `customer-portal-ui` folder.
+### 5. Start the React Frontend
 
-Install the dependencies:
+Open another terminal inside the `customer-portal-ui` directory.
+
+Install the frontend dependencies:
 
 ```bash
 npm install
 ```
 
-Start the development server:
+Start the Vite development server:
 
 ```bash
 npm run dev
 ```
 
-Open the local URL displayed by Vite, normally:
+Open the local URL displayed in your terminal. It is commonly:
 
 `http://localhost:5173`
 
-## API Endpoints
+Keep both the backend and frontend running while testing the application.
+
+## 🔗 API Endpoints
+
+The following endpoints describe the API structure. Confirm them against your current controller mappings if your implementation differs.
 
 ### Authentication
 
 | Method | Endpoint | Purpose |
 |---|---|---|
-| POST | `/auth/signup` | Register a user |
-| POST | `/auth/login` | Log in |
-| GET | `/auth/me` | Get current user information |
-| POST | `/auth/logout` | Log out |
+| `POST` | `/auth/signup` | Register a new user. |
+| `POST` | `/auth/login` | Authenticate a user. |
+| `GET` | `/auth/me` | Retrieve the current session's user information. |
+| `POST` | `/auth/logout` | End the authenticated session. |
 
 ### Course Management
 
 | Method | Endpoint | Purpose |
 |---|---|---|
-| GET | `/course/getAll` | View courses, with optional filters |
-| GET | `/course/getCourseById/{id}` | Get course details |
-| POST | `/course/create` | Add a course (admin) |
-| PUT | `/course/updateCourse/{id}` | Update a course (admin) |
-| PATCH | `/course/updatecourseDetails/{id}` | Partially update a course (admin) |
-| DELETE | `/course/deleteCourse/{id}` | Delete a course (admin) |
+| `GET` | `/course/getAll` | Retrieve available courses. |
+| `GET` | `/course/getCourseById/{id}` | Retrieve course details. |
+| `POST` | `/course/create` | Create a course; admin access required. |
+| `PUT` | `/course/updateCourse/{id}` | Update a course; admin access required. |
+| `PATCH` | `/course/updatecourseDetails/{id}` | Partially update course details, if implemented. |
+| `DELETE` | `/course/deleteCourse/{id}` | Delete a course; admin access required. |
 
-The course listing supports optional `search`, `category`, and `maxFee` query parameters.
+The course listing may support optional search, category, or maximum-fee parameters when implemented by the backend.
 
 ### Enrollment Management
 
 | Method | Endpoint | Purpose |
 |---|---|---|
-| POST | `/enrollments/{courseId}` | Enroll in a course |
-| GET | `/enrollments/mine` | View the current user's enrollments |
-| DELETE | `/enrollments/{courseId}` | Cancel an enrollment |
+| `POST` | `/enrollments/{courseId}` | Enroll in a course. |
+| `GET` | `/enrollments/mine` | Retrieve the current user's enrollments, if this is the configured route. |
+| `DELETE` | `/enrollments/{courseId}` | Cancel an enrollment, if implemented. |
 
-Enrollment endpoints require an authenticated user.
+Enrollment operations should require authentication. The exact endpoint names must match your backend controllers.
 
-## Creating an Admin Account
+## 👤 Creating an Admin Account
 
-1. Register through the application's signup page.
-2. Open MySQL and find your account in the `app_users` table.
-3. Update the role of your intended account:
+Public signup should create a normal user account. To test the admin dashboard:
+
+1. Register an account using the signup page.
+2. Open MySQL and locate the account in the `app_users` table.
+3. Assign the admin role using the schema and role format configured by your application.
+4. Log out and log in again so the application retrieves the updated role.
+
+Example only — confirm your actual column names and role values before executing:
 
 ```sql
 UPDATE app_users
@@ -229,31 +353,36 @@ SET role = 'ADMIN'
 WHERE id = YOUR_USER_ID;
 ```
 
-Replace `YOUR_USER_ID` with the correct account ID. Log out and log in again.
+Replace `YOUR_USER_ID` with the correct account ID. Do not expose administrator credentials or give public users the ability to assign themselves admin roles.
 
-Public registration creates normal `USER` accounts by default.
+## 📚 Learning Outcomes
 
-## Learning Outcomes
+This project provides practical experience with:
 
-Through this project, I gained practical experience in:
+- Building REST APIs using Spring Boot.
+- Developing React components and multi-page navigation.
+- Connecting a frontend to a Java backend.
+- Working with MySQL, Hibernate, and Spring Data JPA.
+- Implementing CRUD operations.
+- Handling user registration, login, and logout.
+- Using session-based authentication.
+- Applying role-based access control.
+- Organizing a backend into controller, service, and repository layers.
+- Managing application source code with Git and GitHub.
 
-- Developing REST APIs using Spring Boot.
-- Building frontend components using React.js.
-- Connecting a Java backend with MySQL using Spring Data JPA.
-- Implementing authentication and role-based access control.
-- Performing CRUD operations.
-- Connecting frontend and backend applications.
-- Organizing a backend using controller, service, and repository layers.
-
-## Future Enhancements
+## 🔮 Future Enhancements
 
 - Add course ratings and reviews.
-- Add pagination for large course lists.
-- Improve automated testing.
-- Add online payment integration.
-- Strengthen security configuration for production deployment.
+- Implement pagination for large course catalogs.
+- Add automated unit and integration tests.
+- Improve accessibility and form validation.
+- Add course completion tracking.
+- Introduce email verification and password reset.
+- Consider online payment integration.
+- Improve security monitoring and production deployment configuration.
 
+## 👩‍💻 Author
 
-**Your Name**
+**Yochitha Raparthi**
 
-Full-Stack Development Project – CourseHub
+Full-Stack Development Project — CourseHub
